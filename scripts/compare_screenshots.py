@@ -210,12 +210,14 @@ def main():
     all_passed = True
     results = []
 
+    max_name_len = max(len(f) for f in rendered_files)
+
     for filename in rendered_files:
         rendered_path = os.path.join(args.rendered_dir, filename)
         reference_path = os.path.join(args.reference_dir, filename)
 
         if not os.path.exists(reference_path):
-            print(f"MISSING {filename}: no reference image found")
+            print(f"MISSING  {filename:{max_name_len}s}  no reference image found")
             all_passed = False
             results.append((filename, False, None, None))
             continue
@@ -224,8 +226,8 @@ def main():
 
         passed, rmse, diff_pct = compare_images(rendered_path, reference_path, diff_path, args.threshold)
 
-        status = "PASS" if passed else "FAIL"
-        print(f"{status}   {filename}: RMSE={rmse:.2f}, diff={diff_pct:.2f}% (threshold={args.threshold}%)")
+        status = "PASS  " if passed else "FAIL  "
+        print(f"{status}  {filename:{max_name_len}s}  RMSE={rmse:5.2f}  diff={diff_pct:5.2f}%  (threshold={args.threshold}%)")
 
         if not passed:
             all_passed = False
